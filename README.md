@@ -39,26 +39,18 @@ where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and
 Как можно увидеть из анализа, то запрос выполняется продолжительное время из-за своей сложности, что может вызвать еще большую нагрузку при большом объеме данных.
 Чтобы оптимизировать данный запрос, можно добавить оптимизирующие индексы на столбцах, используемых для объединения и фильтрации (например, payment_date, customer_id, inventory_id, title), это может ускорить выполнение запроса.
 
-![5.png](https://github.com/Skiledqo/sdb-12.05/blob/main/5.png)
+![55.png](https://github.com/Skiledqo/sdb-12.05/blob/main/55.png)
 
-![6.png](https://github.com/Skiledqo/sdb-12.05/blob/main/6.png)
-
-![7.png](https://github.com/Skiledqo/sdb-12.05/blob/main/7.png)
+![66.png](https://github.com/Skiledqo/sdb-12.05/blob/main/66.png)
 
 EXPLAIN ANALYZE
-
-SELECT DISTINCT CONCAT(c.last_name, ' ', c.first_name), SUM(p.amount) OVER (PARTITION BY c.customer_id, f.title)
-
+SELECT CONCAT(c.last_name, ' ', c.first_name) AS customer_name, SUM(p.amount) AS total_amount
 FROM payment p
-
 JOIN rental r ON p.payment_date = r.rental_date
-
 JOIN customer c ON r.customer_id = c.customer_id
-
 JOIN inventory i ON i.inventory_id = r.inventory_id
+WHERE p.payment_date >= '2005-07-30' AND p.payment_date < DATE_ADD('2005-07-30', INTERVAL 1 DAY)
+GROUP BY customer_name;
 
-JOIN film f ON i.film_id = f.film_id
-
-WHERE DATE(p.payment_date) = '2005-07-30';
 
 
