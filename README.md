@@ -44,12 +44,19 @@ where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and
 ![66.png](https://github.com/Skiledqo/sdb-12.05/blob/main/66.png)
 
 EXPLAIN ANALYZE
+
 SELECT CONCAT(c.last_name, ' ', c.first_name) AS customer_name, SUM(p.amount) AS total_amount
+
 FROM payment p
+
 JOIN rental r ON p.payment_date = r.rental_date
+
 JOIN customer c ON r.customer_id = c.customer_id
+
 JOIN inventory i ON i.inventory_id = r.inventory_id
+
 WHERE p.payment_date >= '2005-07-30' AND p.payment_date < DATE_ADD('2005-07-30', INTERVAL 1 DAY)
+
 GROUP BY customer_name;
 
 
